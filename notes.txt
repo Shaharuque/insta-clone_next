@@ -1,0 +1,106 @@
+    //const [item2, setItem2] = useState<string>('')
+  const [refreshToken, setRefreshToken] = useState<string>('')
+  
+  // Here every microservice api working fine . main problem is that middleware tonmoy bhai made
+  useEffect(() => {
+    // Perform localStorage action
+    // const item: any = localStorage.getItem('token')
+    const refresh: any = localStorage.getItem('refresh_token')
+    // setItem2(item)
+    setRefreshToken(refresh)
+  }, [])
+
+ 
+ useEffect(() => {
+
+    const callFunction = async () => {
+      try {
+        const formData = {
+          grant_type: "refresh_token",
+          refresh_token: refreshToken
+        }
+        // Define your headers
+        const headers = {
+          "Content-Type": "application/json",
+        };
+        // Define the URL for your POST request
+        const url = 'http://127.0.0.1:5000/user/auth';
+
+        // Make a POST request with custom headers using Axios
+        const response = await axios.post(url, formData, { headers });
+
+        // Handle the response data
+        console.log(response.data);
+        localStorage.setItem('token', response.data.access_token)
+      } catch (error) {
+        // Handle errors
+        console.error('Error:', error);
+      }
+
+    }
+    if (refreshToken) {
+      callFunction()
+    }
+
+  }, [refreshToken])
+
+
+    useEffect(() => {
+    const callFunction = async () => {
+      try {
+        // Define your headers
+        // const headers = {
+        //   "Host": "misterloo.seliselocal.com",
+        //   "Origin": "http://misterloo.seliselocal.com",
+        //   "Referer": "http://misterloo.seliselocal.com/login",
+        //   "Authorization": `Bearer ${localStorage.getItem('token')}`
+        // };
+        // Define the URL for your POST request
+        const url = 'http://127.0.0.1:5000/user/auth/loggedin/user';
+
+        // Make a POST request with custom headers using Axios
+        const response = await axiosInstance.get(url);
+
+        // Handle the response data
+        console.log(response.data);
+      } catch (error) {
+        // Handle errors
+        console.error('Error:', error);
+      }
+    }
+    callFunction()
+  }, [])
+
+
+ useEffect(() => {
+    const callFunction = async () => {
+      try {
+        const fileId = "4f23068f-cceb-43e7-b9ae-eb129fbe66d0"
+        // const parsedUrl=await getImageUrl(fileId)
+        // console.log(parsedUrl)
+        const formData = {
+          "fileId": fileId
+        }
+        // Define your headers
+        // const headers = {
+        //   "token": `Bearer ${localStorage.getItem('token')}`,
+        //   "Content-Type": "application/json",
+        //   "Content-Length": "<calculated when request is sent>",
+        //   "Host": "<calculated when request is sent>",
+        // };
+        // Define the URL for your POST request
+        const url = 'http://127.0.0.1:5000/storage/url/parser';
+
+        // Make a POST request with custom headers using Axios
+        const response = await axiosInstance.post(url, formData);
+
+        // Handle the response data
+        console.log(response.data);
+      } catch (error) {
+        // Handle errors
+        console.error('Error:', error);
+      }
+    }
+
+    callFunction()
+  }, [])  

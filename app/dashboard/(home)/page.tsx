@@ -1,3 +1,4 @@
+
 // import { PostsSkeleton } from "@/components/Skeletons";
 import Posts from "@/components/Posts";
 import { Suspense } from "react";
