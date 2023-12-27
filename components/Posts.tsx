@@ -3,14 +3,16 @@ import { fetchFollowersPost,fetchInstaPosts } from "@/lib/data";
 import Post from "./Post";
 // import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
-import { parseImage } from "@/lib/actions";
+import { fetchLoggedInUser, parseImage } from "@/lib/actions";
 
 
 async function Posts() {
 
   const loggedInUserId = "7e648dc6-f120-42e6-9c34-8cf366a63654";
+  const loggedIn = await fetchLoggedInUser()
+
   const posts = await fetchInstaPosts(loggedInUserId);
-  console.log(posts)
+  //console.log(posts)
 
   //server side rendering I have to use middleware concept here cuz axios interceptor only works on client side
   //const parsed=await parseImage() 
@@ -48,7 +50,7 @@ async function Posts() {
         <Post key={post._id} post={post} />
       ))}
 
-      <h1>Test</h1>
+      <h1>{loggedIn?.UserName}</h1>
     </>
   );
 }

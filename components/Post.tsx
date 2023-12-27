@@ -15,7 +15,7 @@ import { parseImage } from '@/lib/actions';
 
 const Post = async ({ post }: any) => {
     const parsed = await parseImage()
-    console.log(parsed)
+    //console.log(parsed)
 
     return (
         <div className="flex flex-col space-y-2.5">
