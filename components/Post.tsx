@@ -11,8 +11,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import UserAvatar from './UserAvatar';
 import Timestamp from './TimesStamps';
+import { parseImage } from '@/lib/actions';
 
-const Post = ({ post }: any) => {
+const Post = async ({ post }: any) => {
+    const parsed = await parseImage()
+    console.log(parsed)
+
     return (
         <div className="flex flex-col space-y-2.5">
             <div className="flex items-center justify-between px-3 sm:px-0">
@@ -20,7 +24,7 @@ const Post = ({ post }: any) => {
                     <UserAvatar user={post.user} />
                     <div className="text-sm">
                         <p className="space-x-1">
-                            <span className="font-semibold">Test_User</span>
+                            <span className="font-semibold">{post?.content}</span>
                             <span
                                 className="font-medium text-neutral-500 dark:text-neutral-400
                         text-xs
@@ -41,7 +45,8 @@ const Post = ({ post }: any) => {
 
             <Card className="relative h-[450px] w-full overflow-hidden rounded-none sm:rounded-md">
                 <Image
-                    src={post?.images[0]}
+                    // src="https://github.com/shadcn.png"   //need to be dynamic
+                    src={parsed?.Url}
                     alt="Post Image"
                     fill
                     className="sm:rounded-md object-cover"

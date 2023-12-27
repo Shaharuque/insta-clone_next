@@ -3,6 +3,7 @@
 // export default NextAuth(authConfig).auth;
 
 
+
 import { NextRequest, NextResponse } from "next/server";
 
 async function middleware(request: NextRequest) {
@@ -11,31 +12,9 @@ async function middleware(request: NextRequest) {
     const access_token = request.cookies.get("access_token");
     const refresh_token = request.cookies.get("refresh_token");
 
-
-    if(refresh_token){
-        const formData = {
-            grant_type: "refresh_token",
-            refresh_token: refresh_token,
-          };
-      
-          // Make a POST request with custom headers using Axios
-          const response = await fetch("http://127.0.0.1:5000/user/auth", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                grant_type: "refresh_token",
-                refresh_token: refresh_token.value
-            }),
-            });
-          console.log("response");
-        return NextResponse.next();
+    if (!access_token && !refresh_token && request.nextUrl.pathname.startsWith('/dashboard')) {
+        return NextResponse.redirect(new URL('/login', request.url));
     }
-
-    // if (!access_token && !refresh_token && request.nextUrl.pathname.startsWith('/dashboard')) {
-    //     return NextResponse.redirect(new URL('/login', request.url));
-    // }
 
     // if (refresh_token && request.nextUrl.pathname.startsWith('/login')) {
     //     if (access_token) {
@@ -103,7 +82,7 @@ async function middleware(request: NextRequest) {
     //     return response;
     // }
 
-    // return NextResponse.next();
+    return NextResponse.next();
 }
 export default middleware;
 

@@ -16,7 +16,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "//selisefalcon.blob.core.windows.net/",
+        hostname: "selisefalcon.blob.core.windows.net",
       },
       {
         protocol: "http",

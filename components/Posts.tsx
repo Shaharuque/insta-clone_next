@@ -1,18 +1,20 @@
 // "use client"
-import { fetchFollowersPost } from "@/lib/data";
+import { fetchFollowersPost,fetchInstaPosts } from "@/lib/data";
 import Post from "./Post";
 // import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
-// import { parseImage } from "@/lib/actions";
+import { parseImage } from "@/lib/actions";
 
 
 async function Posts() {
 
-  const posts = await fetchFollowersPost();
-  //console.log(posts)
+  const loggedInUserId = "7e648dc6-f120-42e6-9c34-8cf366a63654";
+  const posts = await fetchInstaPosts(loggedInUserId);
+  console.log(posts)
 
   //server side rendering I have to use middleware concept here cuz axios interceptor only works on client side
-  //const parsed=await parseImage()   
+  //const parsed=await parseImage() 
+  // console.log(parsed)  
 
   // useEffect(() => {
   //   const callFunction = async () => {
@@ -42,9 +44,10 @@ async function Posts() {
 
   return (
     <>
-      {posts?.ads?.map((post:any) => (
+      {posts?.posts?.map((post:any) => (
         <Post key={post._id} post={post} />
       ))}
+
       <h1>Test</h1>
     </>
   );
