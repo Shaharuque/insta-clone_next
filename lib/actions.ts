@@ -341,10 +341,10 @@ export const createUserPost = async (data: any) => {
   try {
     const formData = {
       userId: data.userId,
-      files: data.files,
-      content: data.content,
-      userName: data.userName,
-      userEmail: data.userEmail,
+      files:data.files,
+      content:data.content,
+      userName:data.userName,
+      userEmail:data.userEmail,
     };
 
     console.log("from like post", formData);
