@@ -1,7 +1,7 @@
 "use client";
 import { MoreHorizontal } from "lucide-react";
 import { fakepost } from '@/lib/definitions';
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -19,6 +19,8 @@ import SubmitButton from "./SubmitButton";
 import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { deletePost } from "@/lib/actions";
+import {useRouter } from "next/navigation";
 
 interface Props {
     post: any;
@@ -26,14 +28,15 @@ interface Props {
 }
 
 const PostOptions = ({ post,loggedIn }: Props) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { userId } = post   //Each post has its ownerId who did the post
 
     //checking if the post is by loggedin user or not
     const loggedInUserId = "64eb61e611e76cab67d456de"  //we will get it from when user logged in then
-    const isPostMine = userId === loggedIn?.UserId;
-
+    const isPostMine = userId === loggedIn;
+    const router = useRouter();
     return (
-        <Dialog>
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
                 <MoreHorizontal className={cn(
                     "h-5 w-5 cursor-pointer dark:text-neutral-400",
@@ -43,20 +46,30 @@ const PostOptions = ({ post,loggedIn }: Props) => {
                 
                 {isPostMine && (
                     <form
-                        // action={async (formData) => {
-                        //     const { message } = await deletePost(formData);
-                        //     toast(message);
-                        // }}
+                    action={async (formData: FormData) => {
+                        const postId = formData.get("postId");
+                        console.log(post,postId, userId);
+              
+                        const result = await deletePost(post, postId, userId);
+                        console.log("result will be", result);
+                        if (result) {
+                          toast.success("Post successfully deleted.");
+                        } else {
+                          toast.error("Something went wrong!");
+                        }
+                        //router.push("/dashboard");
+                        setIsModalOpen(false);
+                      }}
                         className="postOption"
                     >
-                        <input type="hidden" name="id" value={post._id} />
+                        <input type="hidden" name="postId" value={post._id} />
                         <SubmitButton className="text-red-500 font-bold disabled:cursor-not-allowed w-full p-3">
                             Delete post
                         </SubmitButton>
                     </form>
                 )}
 
-                {/* {isPostMine && (
+                {isPostMine && (
                     <Link
                         scroll={false}
                         href={`/dashboard/p/${post._id}/edit`}
@@ -64,7 +77,7 @@ const PostOptions = ({ post,loggedIn }: Props) => {
                     >
                         Edit
                     </Link>
-                )} */}
+                )}
 
                 <form action="" className="postOption">
                     <button className="w-full p-3">Hide like count</button>
