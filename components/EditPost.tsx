@@ -27,6 +27,7 @@ import { z } from "zod";
 import { ImageSlider } from "./ImageSlider";
 import ShadCnCarousel from "./ShadCnCarousel";
 import { InfoIcon } from "lucide-react";
+import { updatePost } from "@/lib/actions";
 
 type props = {
     postId: string;
@@ -35,7 +36,7 @@ type props = {
 };
 
 function EditPost({ postId, post, parsedImages }: props) {
-    const {content}=post?.post
+    const {content,userId}=post?.post
     const mount = useMount();
     const pathname = usePathname();
     const isEditPage = pathname === `/dashboard/p/${postId}/edit`;
@@ -75,20 +76,20 @@ function EditPost({ postId, post, parsedImages }: props) {
                                     className="rounded-md object-cover"
                                 /> */}
 
-                            <ShadCnCarousel images={parsedImages}/>
+                            {/* <ShadCnCarousel images={parsedImages}/> */}
 
-                            {/* <ImageSlider multiImage={parsedImages} images={post?.post?.files} /> */}
+                            <ImageSlider multiImage={parsedImages} images={post?.post?.files} />
                         </AspectRatio>
                     </div>
                     <form
                         className="space-y-4"
                         onSubmit={form.handleSubmit(async (values) => {
-                            console.log(values)
-                            //   const res = await updatePost(values);
-
-                            //   if (res) {
-                            //     return toast.error(<Error res={res} />);
-                            //   }
+                            // console.log(values)
+                              const res = await updatePost(values?.caption,postId, userId);
+                              router.push(`/dashboard`);
+                              if (res) {
+                                return toast.success("Updated successfully");
+                              }
                         })}
                     >
                         <FormField
@@ -122,6 +123,9 @@ function EditPost({ postId, post, parsedImages }: props) {
 }
 
 export default EditPost;
+
+
+
 
 
 

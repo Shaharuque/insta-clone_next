@@ -1,7 +1,7 @@
 "use client";
 import { MoreHorizontal } from "lucide-react";
 import { fakepost } from '@/lib/definitions';
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -20,15 +20,14 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { deletePost } from "@/lib/actions";
-import {useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface Props {
     post: any;
     loggedIn: any;
 }
 
-const PostOptions = ({ post,loggedIn }: Props) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+const PostOptions = ({ post, loggedIn }: Props) => {
     const { userId } = post   //Each post has its ownerId who did the post
 
     //checking if the post is by loggedin user or not
@@ -36,30 +35,25 @@ const PostOptions = ({ post,loggedIn }: Props) => {
     const isPostMine = userId === loggedIn;
     const router = useRouter();
     return (
-        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <Dialog>
             <DialogTrigger asChild>
                 <MoreHorizontal className={cn(
                     "h-5 w-5 cursor-pointer dark:text-neutral-400",
                 )} />
             </DialogTrigger>
             <DialogContent className="dialogContent">
-                
+
                 {isPostMine && (
                     <form
-                    action={async (formData: FormData) => {
-                        const postId = formData.get("postId");
-                        console.log(post,postId, userId);
-              
-                        const result = await deletePost(post, postId, userId);
-                        console.log("result will be", result);
-                        if (result) {
-                          toast.success("Post successfully deleted.");
-                        } else {
-                          toast.error("Something went wrong!");
-                        }
-                        //router.push("/dashboard");
-                        setIsModalOpen(false);
-                      }}
+                        action={async (formData: FormData) => {
+                            const postId = formData.get("postId");
+                            console.log(post, postId, userId);
+
+                            const result = await deletePost(post, postId, userId);
+                            console.log("result will be", result);
+                            toast.success('Deleted successfully')
+                            router.back()
+                        }}
                         className="postOption"
                     >
                         <input type="hidden" name="postId" value={post._id} />

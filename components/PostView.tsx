@@ -93,7 +93,7 @@ const PostView = ({ id, post, loggedIn, multiImage }: props) => {
                     <div className="px-2 hidden md:block mt-auto p-2.5">
                         <PostActions post={post} loggedIn={loggedIn} />
                         <time className="text-[11px]  uppercase text-zinc-500 font-medium">
-                            {new Date(post.createdAt).toLocaleDateString("en-US", {
+                            {new Date(post?.createdAt).toLocaleDateString("en-US", {
                                 month: "long",
                                 day: "numeric",
                             })}
