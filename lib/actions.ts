@@ -552,3 +552,34 @@ export const deletePost = async (
     return error;
   }
 };
+
+//fetch user info by its id from UAM selise
+export const fetchProfile = async (userId: string) => {
+  try {
+    // Define the URL for your POST request
+    const url = `http://microservices.seliselocal.com/api/uam/v23/UserAccessManagement/SecurityQuery/GetUserById?UserId=${userId}`;
+
+    // Make a POST request with custom headers using Axios
+    const response = await axiosInstance.get(url);
+    //console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.log("Error while fetching user profile", error);
+  }
+};
+
+//fetch user details from business table
+export const fetchUserDetails = async (userName: string) => {
+  try {
+    // Define the URL for your POST request
+    const url = `http://127.0.0.1:5000/user/details/${userName}`;
+
+    // Make a POST request with custom headers using Axios
+    const response = await fetch(url, {
+      cache: "no-cache",
+    });
+    return response.json();
+  } catch (error) {
+    throw new Error("Failed to fetch");
+  }
+};
