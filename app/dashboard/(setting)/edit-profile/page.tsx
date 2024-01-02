@@ -17,7 +17,7 @@ async function EditProfile() {
   }
 
   return (
-    <div className="px-12 ml-[400px]">
+    <div className="px-12 ml-[10px]">
       <ProfileForm profile={profile} />
     </div>
   );

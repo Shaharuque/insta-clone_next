@@ -583,3 +583,28 @@ export const fetchUserDetails = async (userName: string) => {
     throw new Error("Failed to fetch");
   }
 };
+
+export const updateUserPic = async (userId: string, files: any) => {
+  try {
+    const formData = {
+      avatar: files,
+    };
+    console.log(userId);
+
+    // Define the URL for your POST request
+    const url = `http://127.0.0.1:5000/user/update/${userId}`;
+    // Make a POST request with custom headers using Axios
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(formData),
+      cache: "no-cache",
+    });
+    return response.json();
+  } catch (error) {
+    throw new Error("Failed to fetch");
+  }
+};

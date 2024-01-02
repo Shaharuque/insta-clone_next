@@ -26,8 +26,11 @@ import { toast } from "sonner";
 import { z } from "zod";
 import ProfileAvatar from "./ProfileAvatar";
 import UserAvatar from "./UserAvatar";
+import { useState } from "react";
+import ProfileImageChange from "./ProfileImageChange";
 
 function ProfileForm({ profile }: { profile: any }) {
+  const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof UserSchema>>({
     resolver: zodResolver(UserSchema),
     defaultValues: {
@@ -44,6 +47,7 @@ function ProfileForm({ profile }: { profile: any }) {
   const { isDirty, isSubmitting, isValid } = form.formState;
 
   return (
+    <>
     <div className="space-y-8 py-10 lg:p-10 max-w-xl">
       <div className="flex items-center gap-x-2 md:gap-x-5">
         <ProfileAvatar user={profile} loggedIn={"true"}>
@@ -59,6 +63,9 @@ function ProfileForm({ profile }: { profile: any }) {
             </p>
           </ProfileAvatar>
         </div> */}
+        <button onClick={()=>setOpen(!open)} className="text-blue-500 text-sm font-bold cursor-pointer hover:text-white">
+          Change profile photo
+        </button>
       </div>
 
       <Form {...form}>
@@ -160,6 +167,10 @@ function ProfileForm({ profile }: { profile: any }) {
         </form>
       </Form>
     </div>
+    {
+      open && <ProfileImageChange open={open} setOpen={setOpen} loggedInUser={profile?.details?.user?.userId}></ProfileImageChange>
+    }
+    </>
   );
 }
 
