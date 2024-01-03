@@ -34,6 +34,7 @@ const PostOptions = ({ post, loggedIn }: Props) => {
     const loggedInUserId = "64eb61e611e76cab67d456de"  //we will get it from when user logged in then
     const isPostMine = userId === loggedIn;
     const router = useRouter();
+    const path=`/dashboard/p/${post._id}`
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -74,7 +75,7 @@ const PostOptions = ({ post, loggedIn }: Props) => {
                 )}
 
                 <form action="" className="postOption">
-                    <button className="w-full p-3">Hide like count</button>
+                    <button className="text-red-500 font-bold disabled:cursor-not-allowed w-full p-3">Hide ad</button>
                 </form>
 
                 <DialogClose asChild>

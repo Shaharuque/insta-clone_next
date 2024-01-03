@@ -1,11 +1,12 @@
-"use client"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { followingUser } from "@/lib/actions"
+import { followingUser, multiImageParse } from "@/lib/actions"
 import { toast } from "sonner"
+import { fetchSuggestedUsers } from "@/lib/data"
+import FollowButtonAction from "./FollowButtonAction"
 type CardProps = {
     suggestion: any
     className?: string
@@ -13,7 +14,16 @@ type CardProps = {
     loggedInUser:string
 }
 
-export function FollowersSuggestionCard({ className, suggestion,loggedInUser }: CardProps) {
+export async function FollowersSuggestionCard({ className, suggestion,loggedInUser }: CardProps) {
+    //const suggestedUser = await fetchSuggestedUsers(loggedInUser);
+    const files =suggestion?.avatar
+    const multiImage=await multiImageParse(files)
+    console.log('-------',multiImage)
+
+    // const handleFollow=async(userToFollow:any)=>{
+    //     await followingUser(loggedInUser, userToFollow);
+    //     toast.success("You are now follwoing him!")
+    // }
 
     return (
 
@@ -22,7 +32,7 @@ export function FollowersSuggestionCard({ className, suggestion,loggedInUser }: 
             <div className='flex justify-between'>
                 <div className="flex items-center space-x-4">
                     <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarImage src={multiImage ? multiImage[0]?.Url : "http://res.cloudinary.com/dshvfqndm/image/upload/v1693295751/o2wi75xbu8wbp2ql5i2b.jpg"} />
                         <AvatarFallback>OM</AvatarFallback>
                     </Avatar>
                     <div>
@@ -34,7 +44,7 @@ export function FollowersSuggestionCard({ className, suggestion,loggedInUser }: 
                 </div>
 
                 {/* form client component in that we are using server action so that "use client" */}
-                <form
+                {/* <form
                     action={async (formData: FormData) => {
                         const userToFollow = formData.get("userId");
                         //console.log(userToFollow)
@@ -45,8 +55,8 @@ export function FollowersSuggestionCard({ className, suggestion,loggedInUser }: 
                 >
 
                     <Button name="userId" value={suggestion?.userId} className="text-[#0095F6] text-[12px]" variant={"ghost"}>Follow</Button>
-                </form>
-
+                </form> */}
+                <FollowButtonAction loggedInUser={loggedInUser} suggestion={suggestion}></FollowButtonAction>
             </div>
         </div>
     )

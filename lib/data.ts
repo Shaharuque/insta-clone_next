@@ -83,6 +83,21 @@ export async function fetchSuggestedUsers(loggedInUserId: string) {
   }
 }
 
+//followed users for loggedin user
+export async function fetchFollowedUsers(loggedInUserId: string) {
+  try {
+    const res = await fetch(
+      `http://127.0.0.1:5000/user/following?loggedInUser=${loggedInUserId}`,
+      {
+        cache: "no-cache",
+      }
+    );
+    return res.json();
+  } catch (error: any) {
+    return error;
+  }
+}
+
 // export async function getImageUrl(imageId: string) {
 //   try {
 //     console.log("image id", imageId);

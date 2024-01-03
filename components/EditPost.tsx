@@ -43,9 +43,7 @@ function EditPost({ postId, post, parsedImages }: props) {
     const router = useRouter();
 
         const formSchema = z.object({
-            caption: z.string().min(2, {
-          message: "Username must be at least 2 characters.",
-        }),
+          caption: z.string().optional()
       })
        
         // 1. Define your form.
