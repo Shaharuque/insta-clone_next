@@ -1,7 +1,7 @@
 import React from "react";
 import { FollowersSuggestionCard } from "./FollowersSuggestionCard";
 import { OwnProfilePage } from "./OwnProfilePage";
-import { fetchSuggestedUsers,fetchFollowedUsers } from "@/lib/data";
+import { fetchSuggestedUsers } from "@/lib/data";
 import Link from "next/link";
 
 type props = {
@@ -12,9 +12,7 @@ type props = {
 const FollowersSuggestion = async ({loggedUser,userId}:props) => {
   //let loggedInUser = "7e648dc6-f120-42e6-9c34-8cf366a63654";
   const suggestedUser = await fetchSuggestedUsers(userId);
-  const followedUser = await fetchFollowedUsers(userId);
   //console.log(suggestedUser);
-  //console.log('---',followedUser)
 
   return (
     <div>
