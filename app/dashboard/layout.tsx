@@ -1,7 +1,7 @@
 import Sidenav from "@/components/Sidenav";
 
 export default function DashboardLayout({
-  children,
+  children ,
 }: {
   children: React.ReactNode;
 }) {

@@ -1,15 +1,17 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm,SubmitHandler } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,19 +19,8 @@ import { Separator } from "@/components/ui/separator";
 import { pacifico } from "./fonts";
 import AppCard from "./AppCard";
 import { FacebookIcon } from "lucide-react";
-import axios from "axios";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 import { authenticate } from "@/lib/actions";
-
-function LoginButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button className="w-full mt-4" type="submit">
-      Log in
-    </Button>
-  );
-}
 
 const formSchema = z.object({
   email: z.string().min(2, {
@@ -40,47 +31,90 @@ const formSchema = z.object({
   }),
 });
 
+type FormFields = z.infer<typeof formSchema>;
+
 const LoginForm = () => {
   const router = useRouter();
-  const [userData, dispatch] = useFormState(onSubmit, undefined);
-  const { pending } = useFormStatus();
+  //const [userData, dispatch] = useFormState(onSubmit, undefined);
 
-  // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<FormFields>({
     defaultValues: {
       email: "",
       password: "",
     },
+    resolver: zodResolver(formSchema),
   });
 
+  // 1. Define your form.
+  // const form = useForm<z.infer<typeof formSchema>>({
+  //   resolver: zodResolver(formSchema),
+  //   defaultValues: {
+  //     email: "",
+  //     password: "",
+  //   },
+  // });
+
   // 2. Define a submit handler.
-  async function onSubmit(
-    prevState: string | undefined,
-    values: z.infer<typeof formSchema>
-  ) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    // console.log(values);
+  // async function onSubmit(
+  //   prevState: string | undefined,
+  //   values: z.infer<typeof formSchema>
+  // ) {
+  //   // Do something with the form values.
+  //   // ✅ This will be type-safe and validated.
+  //   // console.log(values);
 
-    const postData = {
-      grant_type: "password_username",
-      username: values.email,
-      password: values.password,
-    };
+  //   const postData = {
+  //     grant_type: "password_username",
+  //     username: values.email,
+  //     password: values.password,
+  //   };
+  //   await new Promise((resolve) => setTimeout(resolve, 7000));
+  //   const data = await authenticate(postData);
 
-    const data = await authenticate(postData);
+  //   //console.log(data)
 
-    console.log(data);
+  //   if (data) {
+  //     router.replace("/dashboard");
+  //     localStorage.setItem("token", data.access_token);
+  //   }
+  //   return data;
+  // }
 
-    if (data) {
-      router.replace("/dashboard");
+
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const postData = {
+        grant_type: "password_username",
+        username: data.email,
+        password: data.password,
+      };
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const result = await authenticate(postData);
+
+      //console.log(data)
+
+      if (result) {
+        router.replace("/dashboard");
+      }
+
+    } catch (error) {
+      setError("root", {
+        message: "This email is already taken",
+      });
     }
-    return data;
-  }
+  };
+
 
   return (
-    <div className="mt-[60px]">
+    <div className="mt-[110px]">
       <div className="border border-gray-200 px-6 py-8">
         <div className="mb-8">
           <h1
@@ -89,7 +123,7 @@ const LoginForm = () => {
             InstaPix
           </h1>
         </div>
-        <Form {...form}>
+        {/* <Form {...form}>
           <form onSubmit={form.handleSubmit(dispatch)} className="space-y-2">
             <FormField
               control={form.control}
@@ -123,9 +157,30 @@ const LoginForm = () => {
                 </FormItem>
               )}
             />
-            <LoginButton />
+            <div>
+              <Button className="w-full mt-4" type="submit">
+                {form.formState.isSubmitting ? "Loading..." : "Log In"}
+              </Button>
+
+
+            </div>
           </form>
-        </Form>
+        </Form> */}
+
+        <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
+          <Input className="text-[12px]" {...register("email")} type="text" placeholder="Phone number, username or email" />
+          {errors.email && (
+            <div className="text-red-500">{errors.email.message}</div>
+          )}
+          <Input className="text-[12px]" {...register("password")} type="password" placeholder="Password" />
+          {errors.password && (
+            <div className="text-red-500">{errors.password.message}</div>
+          )}
+          <Button className="w-full mt-4" disabled={isSubmitting} type="submit">
+            {isSubmitting ? "Loading..." : "Submit"}
+          </Button>
+          {errors.root && <div className="text-red-500">{errors.root.message}</div>}
+        </form>
 
         <div className="flex justify-between items-center my-4">
           <Separator decorative className="w-1/3 border-1" />
@@ -148,6 +203,7 @@ const LoginForm = () => {
         </div>
       </div>
 
+      {/* sign up */}
       <div className="border border-gray-200 px-6 py-4 mt-6 text-[14px]">
         <p className="text-center">
           Don&apos;t have account?
@@ -155,7 +211,7 @@ const LoginForm = () => {
         </p>
       </div>
 
-      {/* <div className="mt-6 flex flex-col items-center">
+      <div className="mt-6 flex flex-col items-center">
         <h1 className="text-[14px]">Get the app.</h1>
         <div className="flex space-x-2">
           <div>
@@ -165,7 +221,7 @@ const LoginForm = () => {
             <AppCard></AppCard>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
